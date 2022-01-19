@@ -6,8 +6,7 @@ const mailHelper = async (user) => {
   const transport = nodemailer.createTransport(
     sendgridTransport({
       auth: {
-        api_key:
-          "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",
+        api_key: process.env.SENDGRID_KEY,
       },
     })
   );
