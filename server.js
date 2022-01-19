@@ -61,6 +61,19 @@ app.use(UserData);
 // const contact = require("./routers/contact");
 // app.use("/", contact);
 
+// ----------------- production --------------------------
+const path = require("path");
+
+__dirname = path.resolve();
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/clients/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "clients", "build", "index.html"));
+  });
+}
+// ----------------- production --------------------------
+
 app.listen(process.env.PORT, () => {
   console.log("server started...");
 });
