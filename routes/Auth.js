@@ -7,10 +7,6 @@ require("../config/database");
 const Authenticate = require("../middleware/Authenticate");
 const mailHelper = require("../utils/mailHelpers");
 
-// router.get("/", (req, res) => {
-//   res.send("hello from simple server :)");
-// });
-
 router.post("/register", async (req, res, next) => {
   try {
     const { name, email, phone, work, password, cpassword } = req.body;
