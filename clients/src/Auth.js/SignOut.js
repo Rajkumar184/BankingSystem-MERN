@@ -5,32 +5,32 @@ import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
 
 const Signout = () => {
-  const cookies = new Cookies();
-  const history = useHistory();
+	const cookies = new Cookies();
+	const history = useHistory();
 
-  const LogoutFunction = async () => {
-    try {
-      await axios.get("/logout");
+	const LogoutFunction = async () => {
+		try {
+			await axios.get("/logout");
 
-      cookies.remove("isLogin");
+			cookies.remove("isLogin");
 
-      history.push("/signin");
-      return toast.success("Logout Successfully!", {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 3000,
-      });
-    } catch (error) {
-      return toast.error(error.response.data.message, {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 3000,
-      });
-    }
-  };
+			history.push("/signin");
+			return toast.success("Logout Successfully!", {
+				position: toast.POSITION.TOP_CENTER,
+				autoClose: 3000,
+			});
+		} catch (error) {
+			return toast.error(error.response.data.message, {
+				position: toast.POSITION.TOP_CENTER,
+				autoClose: 3000,
+			});
+		}
+	};
 
-  useEffect(() => {
-    LogoutFunction();
-  });
-  return <></>;
+	useEffect(() => {
+		LogoutFunction();
+	});
+	return <></>;
 };
 
 export default Signout;

@@ -4,86 +4,86 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    minlength: 3,
-  },
+	name: {
+		type: String,
+		required: true,
+		minlength: 3,
+	},
 
-  email: {
-    type: String,
-    required: true,
-    unique: [true, "Email is already present"],
-    validator(value) {
-      if (!validator.isEmail(value)) {
-        throw new Error("Invalid Email");
-      }
-    },
-  },
+	email: {
+		type: String,
+		required: true,
+		unique: [true, "Email is already present"],
+		validator(value) {
+			if (!validator.isEmail(value)) {
+				throw new Error("Invalid Email");
+			}
+		},
+	},
 
-  phone: {
-    type: Number,
-    min: 10,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  cpassword: {
-    type: String,
-    required: true,
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-  amount: [
-    {
-      type: Number,
-    },
-  ],
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
+	phone: {
+		type: Number,
+		min: 10,
+		required: true,
+		unique: true,
+	},
+	password: {
+		type: String,
+		required: true,
+	},
+	cpassword: {
+		type: String,
+		required: true,
+	},
+	date: {
+		type: Date,
+		default: Date.now,
+	},
+	amount: [
+		{
+			type: Number,
+		},
+	],
+	tokens: [
+		{
+			token: {
+				type: String,
+				required: true,
+			},
+		},
+	],
 });
 
 // converting password into hash
 userSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    console.log(`the current password is ${this.password}`);
-    this.password = await bcrypt.hash(this.password, 12);
-    console.log(`the current hash password is ${this.password}`);
+	if (this.isModified("password")) {
+		console.log(`the current password is ${this.password}`);
+		this.password = await bcrypt.hash(this.password, 12);
+		console.log(`the current hash password is ${this.password}`);
 
-    this.cpassword = await bcrypt.hash(this.password, 12);
-  }
-  next();
+		this.cpassword = await bcrypt.hash(this.password, 12);
+	}
+	next();
 });
 
 // generating tokens
 userSchema.methods.generateAuthToken = async function () {
-  try {
-    return jwt.sign({ id: this._id.toString() }, process.env.SECRET_KEY);
-  } catch (error) {
-    console.log(`the error part ${error}`);
-  }
+	try {
+		return jwt.sign({ id: this._id.toString() }, process.env.SECRET_KEY);
+	} catch (error) {
+		console.log(`the error part ${error}`);
+	}
 };
 
 // storing messages
 userSchema.methods.addMessage = async function (name, email, phone, amount) {
-  try {
-    this.amount = this.amount.concat({ name, email, phone, amount });
-    await this.save();
-    return this.amount;
-  } catch (error) {
-    console.log(error);
-  }
+	try {
+		this.amount = this.amount.concat({ name, email, phone, amount });
+		await this.save();
+		return this.amount;
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 const UserData = mongoose.model("UserData", userSchema);
